@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>README.html</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+</head>
+
+<body>
+
+<h1 id="rustproxyforzmqandgrpcpoc">Rust Proxy for ZMQ and GRPC POC</h1>
+
+<p>This is a proof-of-concept for a Rust process that can proxy ZMQ and
+GRPC traffic coming into the same port to their respective backend
+processes.</p>
+
+<p>There are five binaries in this crate:</p>
+
+<ul>
+<li><p>zmq_push
+A simple ZMQ PUSH socket client that sends messages.</p></li>
+<li><p>zmq_pull
+A simple ZMQ PULL socket server that receives messages from <code>zmq_push</code>.</p></li>
+<li><p>grpc_client
+A Tonic-based GRPC client that sends simple GRPC/Protobuf messages.</p></li>
+<li><p>grpc_server
+A Tonic-based GRPC server that receives messages from <code>grpc_server</code></p></li>
+<li><p>proxy
+A process that detects whether incoming TCP connections are GRPC or
+ZMQ, and then forwards the connections to <code>zmq_pull</code> or <code>grpc_server</code>,
+as appropriate.</p></li>
+</ul>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<pre><code class="sh">brew install cmake # for static compilation of ZMQ
+brew install tmuxinator # to run the demo session
+</code></pre>
+
+<h2 id="building">Building</h2>
+
+<pre><code class="sh">cargo build
+</code></pre>
+
+<h2 id="demo">Demo</h2>
+
+<p>The demo creates a tmux session with two windows; one for servers, and
+one for clients.</p>
+
+<p>The server window has panes for <code>proxy</code>, <code>zmq_pull</code>, and
+<code>grpc_server</code>. All are running on different ports, and <code>proxy</code> is
+configured with the respective ports of <code>zmq_pull</code> and <code>grpc_server</code>.</p>
+
+<p>The client window has four panes total, with two each for separate
+<code>zmq_push</code> and <code>grpc_client</code> processes. Importantly, all clients are
+configured to connect to the <code>proxy</code> service&#8217;s port.</p>
+
+<p>To run the demo, simply type:</p>
+
+<pre><code class="sh">tmuxinator
+</code></pre>
+
+<p>When you are done, the following command will kill the <code>tmux</code> session:</p>
+
+<pre><code class="sh">tmux kill-session -t zmq-grpc-proxy-poc
+</code></pre>
+
+<h2 id="why">Why?</h2>
+
+<p>This was a test to figure out how to replace the ZMQ communication
+logic in the <a href="https://github.com/habitat-sh/habitat">Habitat
+Supervisor</a> with GRPC in a
+backwards-compatible way.</p>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+[package]
+name = "zmq-to-grpc"
+version = "0.1.0"
+authors = ["Christopher Maier <christopher.maier@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+zmq = { version = "0.9", features = [ "vendored" ] }
+clap = "*"
+tonic = "0.1"
+prost = "0.6"
+tokio = { version = "0.2", features = ["macros", "tcp", "io-util"] }
+futures = "*"
+
+[build-dependencies]
+tonic-build = "0.1.0"
+
+[[bin]]
+name = "zmq_pull"
+path = "src/zmq_pull.rs"
+
+[[bin]]
+name = "zmq_push"
+path = "src/zmq_push.rs"
+
+[[bin]]
+name = "grpc_server"
+path = "src/grpc_server.rs"
+
+[[bin]]
+name = "grpc_client"
+path = "src/grpc_client.rs"
+
+[[bin]]
+name = "proxy"
+path = "src/proxy.rs"

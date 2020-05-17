@@ -1,0 +1,15 @@
+name: zmq-grpc-proxy-poc
+windows:
+  - servers:
+      layout: main-horizontal
+      panes:
+        - target/debug/proxy --bind-port=1111 --grpc-port=2222 --zmq-port=3333
+        - target/debug/grpc_server --bind-port=2222
+        - target/debug/zmq_pull --bind-port=3333
+  - clients:
+      layout: tiled
+      panes:
+        - sleep 10 && target/debug/grpc_client --name="GRPC Client 1" --connect-port=1111
+        - sleep 10 && target/debug/grpc_client --name="GRPC Client 2" --connect-port=1111
+        - sleep 10 && target/debug/zmq_push --name="ZMQ Push 1" --connect-port=1111
+        - sleep 10 && target/debug/zmq_push --name="ZMQ Push 2" --connect-port=1111
